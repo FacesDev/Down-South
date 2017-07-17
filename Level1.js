@@ -34,6 +34,9 @@ var drag;
 var score = 0;
 var scoreText;
 var winText;
+var playerXP = 0;
+var gameXPsteps = 15;
+var playerLevel = 0;
 
 
 Game.Level1.prototype = {
@@ -127,7 +130,9 @@ Game.Level1.prototype = {
         this.physics.arcade.collide(player, layer);
         this.physics.arcade.collide(player, enemy1.bird,this.resetPlayer);
       
-
+        //Experience 
+        playerLevel = Math.log(playerXP,gameXPsteps);
+        console.log('Level: ' + Math.floor(playerLevel));
         
         if (controls.right.isDown) {
             player.animations.play('right');
@@ -155,6 +160,7 @@ Game.Level1.prototype = {
         if(checkOverlap(bullets, enemy1.bird)){
             enemy1.bird.kill();
             score +=220;
+            playerXP +=15;
           
         }
         if (score == 1000) {
@@ -170,7 +176,11 @@ Game.Level1.prototype = {
         player.reset(100, 2400);
     },
     getCoin:function(){
+
         map.putTile(-1,layer.getTileX(player.x), layer.getTileY(player.y));
+        playerXP += 15;
+        console.log("log", playerXP);
+        score +=10;
        
  
 
