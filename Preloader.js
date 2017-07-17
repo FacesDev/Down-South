@@ -13,9 +13,9 @@ Game.Preloader.prototype = {
 
         this.load.setPreloadSprite(this.preloadBar);
         console.log('text');
-        // this.load.tilemap('map', 'assets/Level1.csv', null, Phaser.Tilemap.CSV);
-        this.load.tilemap('map', 'assets/newMap.csv', null, Phaser.Tilemap.CSV);
-        // this.load.image('tileset', 'assets/ts.png');
+         this.load.tilemap('map', 'assets/TowerHigh.csv', null, Phaser.Tilemap.CSV);
+        // this.load.tilemap('map', 'assets/newMap.csv', null, Phaser.Tilemap.CSV);
+       
         this.load.image('tileset', 'assets/tileset_burned.png');
      
         this.load.image('bullet', 'assets/bullet.png');
@@ -23,6 +23,12 @@ Game.Preloader.prototype = {
         this.load.image('star', 'assets/star.png');
         this.load.image('drag', 'assets/diamond.png');
         this.load.image('bird', 'assets/bird.png');
+        
+        //main menu/
+        this.load.image('titlescreen', 'assets/downSouth.png');
+        this.load.image('button', 'assets/button.png');
+
+
 
 
     },
@@ -30,7 +36,7 @@ Game.Preloader.prototype = {
 
     create: function () {
 
-        this.state.start('Level1');
+        this.state.start('MainMenu');
 
     }
 }

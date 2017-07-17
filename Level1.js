@@ -12,7 +12,7 @@ EnemyBird = function(index,game,x,y){
     },2000,'Linear',true,0,100,true);
     
 
-
+//78 stars
 }
 
 var enemy1;
@@ -31,9 +31,19 @@ var controls = {};
 var playerSpeed = 200;
 var jumpTimer = 0;
 var drag;
+var score = 0;
+var scoreText;
+var winText;
+
 
 Game.Level1.prototype = {
     create: function (game) {
+        scoreText = game.add.text(100, 2400, 'score: 0', { fontSize: '32px', fill: '#000' });
+        winText = game.add.text(game.world.centerX, game.world.centerY, "You Win!", { font: '32px Arial', fill: '#fff' });
+        winText.visible = false;
+        
+        winText.fixedToCamera = true;
+        scoreText.fixedToCamera = true;
 
         this.stage.backgroundColor = '#3A5963';
         this.physics.arcade.gravity.y = 1400;
@@ -41,14 +51,19 @@ Game.Level1.prototype = {
 
         map = this.add.tilemap('map');
         //collision tiles
-        map.setCollisionBetween(0, 20);
+        map.setCollisionBetween(0, 21);
+        map.setCollisionBetween(24, 100);
+        
+        // map.setCollisionBetween(35, 100);
         map.setTileIndexCallback(33,this.resetPlayer,this);
+        map.setTileIndexCallback(34,this.resetPlayer,this);
+        
         map.setTileIndexCallback(79,this.getCoin,this);
 
 
 
         //
-        player = this.add.sprite(100, 560, 'player');
+        player = this.add.sprite(100, 2400, 'player');
         player.anchor.setTo(0.5, 0.5);
         player.animations.add('right', [0, 1, 2, 3], 10, true);
         player.animations.add('left', [5, 6, 7, 8], 10, true);
@@ -66,7 +81,7 @@ Game.Level1.prototype = {
             right: this.input.keyboard.addKey(Phaser.Keyboard.A),
             left: this.input.keyboard.addKey(Phaser.Keyboard.D),
             up: this.input.keyboard.addKey(Phaser.Keyboard.W),
-            shoot: this.input.keyboard.addKey(Phaser.Keyboard.UP)
+            shoot: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
 
         };
 
@@ -136,18 +151,29 @@ Game.Level1.prototype = {
         if (controls.shoot.isDown){
             this.shootBullet();
         }
+         scoreText.text = 'Score: ' + score;
         if(checkOverlap(bullets, enemy1.bird)){
             enemy1.bird.kill();
+            score +=220;
+          
+        }
+        if (score == 1000) {
+            winText.visible = true;
+            scoreText.visible = false;
+        
         }
 
 
     },
     resetPlayer:function(){
         //same as spawn
-        player.reset(100,560);
+        player.reset(100, 2400);
     },
     getCoin:function(){
         map.putTile(-1,layer.getTileX(player.x), layer.getTileY(player.y));
+       
+ 
+
     },
     shootBullet:function(){
         if(this.time.now > shootTime){
