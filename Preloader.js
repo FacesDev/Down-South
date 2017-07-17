@@ -15,6 +15,12 @@ Game.Preloader.prototype = {
         console.log('text');
         this.load.tilemap('map', 'assets/Level1.csv', null, Phaser.Tilemap.CSV);
         this.load.image('tileset', 'assets/ts.png');
+
+
+        this.load.spritesheet('player', 'assets/dude.png',32,45)
+
+
+
     },
 
 
