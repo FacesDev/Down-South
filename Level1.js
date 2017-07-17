@@ -19,7 +19,7 @@ Game.Level1.prototype = {
 
         map = this.add.tilemap('map');
         //collision tiles
-        map.setCollisionBetween(0, 900);
+        map.setCollisionBetween(0, 20);
         player = this.add.sprite(100, 560, 'player');
         player.anchor.setTo(0.5, 0.5);
         player.animations.add('right', [0, 1, 2, 3], 10, true);
