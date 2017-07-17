@@ -20,6 +20,11 @@ Game.Level1.prototype = {
         map = this.add.tilemap('map');
         //collision tiles
         map.setCollisionBetween(0, 20);
+        map.setTileIndexCallback(33,this.resetPlayer,this);
+
+
+
+        //
         player = this.add.sprite(100, 560, 'player');
         player.anchor.setTo(0.5, 0.5);
         player.animations.add('right', [0, 1, 2, 3], 10, true);
@@ -64,6 +69,9 @@ Game.Level1.prototype = {
         bullets.setAll('checkWorldBounds', true);
         //
         fireButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+        //
+
     },
     update: function () {
         this.physics.arcade.collide(stars, layer);
@@ -71,9 +79,7 @@ Game.Level1.prototype = {
         player.body.velocity.x = 0;
         this.physics.arcade.collide(player, layer);
 
-        if (controls.up.isDown) {
-            player.animations.play('jump');
-        }
+        
         if (controls.right.isDown) {
             player.animations.play('right');
             player.scale.setTo(1, 1);
@@ -90,6 +96,7 @@ Game.Level1.prototype = {
         }
         if (controls.up.isUp && controls.left.isUp && controls.right.isUp) {
             player.animations.play('idle');
+            player.animations.play('jump');
         }
         // if (fireButton.isDown) {
         //     fireBullet();
@@ -97,10 +104,27 @@ Game.Level1.prototype = {
 
 
     },
+    resetPlayer:function(){
+        //same as spawn
+        player.reset(100,560);
+    }
     
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function collectStar (player, star) {
 
