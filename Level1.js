@@ -1,17 +1,39 @@
+EnemyBird = function(index,game,x,y){
+    this.bird = game.add.sprite(x,y,'bird');
+    this.bird.anchor.setTo(0.5,0.5);
+    this.bird.name = index.toString();
+    game.physics.enable(this.bird,Phaser.Physics.ARCADE);
+    this.bird.body.immovable = true;
+    this.bird.body.collideWorldBounds = true;
+    this.bird.body.allowGravity = false;
+
+    this.birdTween = game.add.tween(this.bird).to({
+        y: this.bird.y + 100
+    },2000,'Linear',true,0,100,true);
+    
+
+
+}
+
+var enemy1;
+
+
+
+
 Game.Level1 = function (game) { };
 var map;
 var layer;
 var bullets;
 var stars;
-var bulletTime =0;
-var fireButton;
+var shootTime =0;
 var player;
 var controls = {};
 var playerSpeed = 200;
 var jumpTimer = 0;
+var drag;
 
 Game.Level1.prototype = {
-    create: function () {
+    create: function (game) {
 
         this.stage.backgroundColor = '#3A5963';
         this.physics.arcade.gravity.y = 1400;
@@ -21,6 +43,7 @@ Game.Level1.prototype = {
         //collision tiles
         map.setCollisionBetween(0, 20);
         map.setTileIndexCallback(33,this.resetPlayer,this);
+        map.setTileIndexCallback(79,this.getCoin,this);
 
 
 
@@ -42,42 +65,53 @@ Game.Level1.prototype = {
         controls = {
             right: this.input.keyboard.addKey(Phaser.Keyboard.A),
             left: this.input.keyboard.addKey(Phaser.Keyboard.D),
-            up: this.input.keyboard.addKey(Phaser.Keyboard.W)
+            up: this.input.keyboard.addKey(Phaser.Keyboard.W),
+            shoot: this.input.keyboard.addKey(Phaser.Keyboard.UP)
+
         };
 
         map.addTilesetImage('preloader', 'tileset');
         layer = map.createLayer(0);
         layer.resizeWorld();
 
-        stars = this.add.group();
+       
+        drag = this.add.sprite(player.x, player.y, 'drag');
+        drag.anchor.setTo(0.5, 0.5);
+        drag.inputEnabled = true;
+        drag.input.enableDrag(true);
 
-        stars.enableBody = true;
-        for (var i = 0; i < 12; i++) {
-            var star = stars.create(i * 70, 0, 'star');
-            star.body.gravity.y = 1000;
-            star.body.bounce.y = 0.7 + Math.random() * 0.2;
-        }
-        //bullet
-        bullets = this.add.group();
+        //enemy
+
+        enemy1 = new EnemyBird(0,game,player.x+400,player.y-200);
+
+        //bullets
+        bullets = game.add.group();
         bullets.enableBody = true;
         bullets.physicsBodyType = Phaser.Physics.ARCADE;
-        //bullet physics
-        bullets.createMultiple(8, 'bullet');
+        //how many bullets
+        bullets.createMultiple(5,'bullet');
+
         bullets.setAll('anchor.x', 0.5);
-        bullets.setAll('anchor.y', 1);
+        bullets.setAll('anchor.y', 0.5);
+
+        //size of bullets
+        bullets.setAll('scale.x', 0.5);
+        bullets.setAll('scale.y', 0.5);
+
         bullets.setAll('outOfBoundsKill', true);
         bullets.setAll('checkWorldBounds', true);
-        //
-        fireButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-        //
+            
+
 
     },
     update: function () {
         this.physics.arcade.collide(stars, layer);
-        this.physics.arcade.overlap(player, stars, collectStar, null, this);
+        // this.physics.arcade.overlap(player, stars, collectStar, null, this);
         player.body.velocity.x = 0;
         this.physics.arcade.collide(player, layer);
+        this.physics.arcade.collide(player, enemy1.bird,this.resetPlayer);
+      
 
         
         if (controls.right.isDown) {
@@ -98,41 +132,68 @@ Game.Level1.prototype = {
             player.animations.play('idle');
             player.animations.play('jump');
         }
-        // if (fireButton.isDown) {
-        //     fireBullet();
-        // }
+        
+        if (controls.shoot.isDown){
+            this.shootBullet();
+        }
+        if(checkOverlap(bullets, enemy1.bird)){
+            enemy1.bird.kill();
+        }
 
 
     },
     resetPlayer:function(){
         //same as spawn
         player.reset(100,560);
+    },
+    getCoin:function(){
+        map.putTile(-1,layer.getTileX(player.x), layer.getTileY(player.y));
+    },
+    shootBullet:function(){
+        if(this.time.now > shootTime){
+            bullet = bullets.getFirstExists(false);
+            if(bullet) {
+                bullet.reset(player.x,player.y);
+
+                bullet.body.velocity.y = -600;
+
+                shootTime = this.time.now + 600;
+            }
+        }
     }
+
     
 
 
 }
 
+function checkOverlap(spriteA,spriteB){
+    var boundsA = spriteA.getBounds();
+    var boundsB = spriteB.getBounds();
 
-
-
-
-
-
-
-
-
-
-
-
-
-function collectStar (player, star) {
-
-    star.kill();
-    // score += 10;
-    // scoreText.text = 'Score: ' + score;
-
+    return Phaser.Rectangle.intersects(boundsA,boundsB);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function collectStar (player, star) {
+
+//     star.kill();
+//     // score += 10;
+//     // scoreText.text = 'Score: ' + score;
+
+// }
 
 // //fires bullet on space down. sets bullet start x:y and velocity. When it gets to the end it cancels
 // function fireBullet() {

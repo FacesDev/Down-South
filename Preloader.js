@@ -16,11 +16,13 @@ Game.Preloader.prototype = {
         // this.load.tilemap('map', 'assets/Level1.csv', null, Phaser.Tilemap.CSV);
         this.load.tilemap('map', 'assets/newMap.csv', null, Phaser.Tilemap.CSV);
         // this.load.image('tileset', 'assets/ts.png');
-        this.load.image('tileset', 'assets/tileset.png');
+        this.load.image('tileset', 'assets/tileset_burned.png');
+     
         this.load.image('bullet', 'assets/bullet.png');
         this.load.spritesheet('player', 'assets/dude.png', 32, 45)
         this.load.image('star', 'assets/star.png');
-
+        this.load.image('drag', 'assets/diamond.png');
+        this.load.image('bird', 'assets/bird.png');
 
 
     },
