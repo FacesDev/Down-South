@@ -1,31 +1,28 @@
-EnemyBird = function(index,game,x,y){
-    this.bird = game.add.sprite(x,y,'bird');
-    this.bird.anchor.setTo(0.5,0.5);
+EnemyBird = function (index, game, x, y) {
+    this.bird = game.add.sprite(x, y, 'bird');
+    this.bird.anchor.setTo(0.5, 0.5);
     this.bird.name = index.toString();
-    game.physics.enable(this.bird,Phaser.Physics.ARCADE);
+    game.physics.enable(this.bird, Phaser.Physics.ARCADE);
     this.bird.body.immovable = true;
     this.bird.body.collideWorldBounds = true;
     this.bird.body.allowGravity = false;
 
     this.birdTween = game.add.tween(this.bird).to({
         y: this.bird.y + 100
-    },2000,'Linear',true,0,100,true);
-    
+    }, 2000, 'Linear', true, 0, 100, true);
 
-//78 stars
+
+    //78 stars
 }
 
 var enemy1;
-
-
-
 
 Game.Level1 = function (game) { };
 var map;
 var layer;
 var bullets;
 var stars;
-var shootTime =0;
+var shootTime = 0;
 var player;
 var controls = {};
 var playerSpeed = 200;
@@ -41,10 +38,27 @@ var playerLevel = 0;
 
 Game.Level1.prototype = {
     create: function (game) {
-        scoreText = game.add.text(100, 2400, 'score: 0', { fontSize: '32px', fill: '#000' });
-        winText = game.add.text(game.world.centerX, game.world.centerY, "You Win!", { font: '32px Arial', fill: '#fff' });
+
+        // beta stars
+        stars = this.add.group();
+
+        stars.enableBody = true;
+
+        for (var i = 0; i < 12; i++) {
+            var star = stars.create(i * 70, 0, 'diamond');
+            star.body.gravity.y = 1000;
+            star.body.bounce.y = 0.7 + Math.random() * 0.2;
+        }
+
+
+
+
+
+        //beta stars
+        scoreText = this.add.text(100, 2400, 'score: 0', { fontSize: '32px', fill: '#000' });
+        winText = this.add.text(this.world.centerX, this.world.centerY, "You Win!", { font: '32px Arial', fill: '#fff' });
         winText.visible = false;
-        
+
         winText.fixedToCamera = true;
         scoreText.fixedToCamera = true;
 
@@ -56,12 +70,12 @@ Game.Level1.prototype = {
         //collision tiles
         map.setCollisionBetween(0, 21);
         map.setCollisionBetween(24, 100);
-        
+
         // map.setCollisionBetween(35, 100);
-        map.setTileIndexCallback(33,this.resetPlayer,this);
-        map.setTileIndexCallback(34,this.resetPlayer,this);
-        
-        map.setTileIndexCallback(79,this.getCoin,this);
+        map.setTileIndexCallback(33, this.resetPlayer, this);
+        map.setTileIndexCallback(34, this.resetPlayer, this);
+
+        // map.setTileIndexCallback(79, this.getCoin, this);
 
 
 
@@ -77,7 +91,7 @@ Game.Level1.prototype = {
         this.physics.arcade.enable(player);
         this.camera.follow(player);
         player.body.collideWorldBounds = true;
-                player.body.bounce.y = 0.2;
+        player.body.bounce.y = 0.2;
 
 
         controls = {
@@ -92,7 +106,7 @@ Game.Level1.prototype = {
         layer = map.createLayer(0);
         layer.resizeWorld();
 
-       
+
         drag = this.add.sprite(player.x, player.y, 'drag');
         drag.anchor.setTo(0.5, 0.5);
         drag.inputEnabled = true;
@@ -100,14 +114,14 @@ Game.Level1.prototype = {
 
         //enemy
 
-        enemy1 = new EnemyBird(0,game,player.x+400,player.y-200);
+        enemy1 = new EnemyBird(0, game, player.x + 400, player.y - 200);
 
         //bullets
         bullets = game.add.group();
         bullets.enableBody = true;
         bullets.physicsBodyType = Phaser.Physics.ARCADE;
         //how many bullets
-        bullets.createMultiple(5,'bullet');
+        bullets.createMultiple(5, 'bullet');
 
         bullets.setAll('anchor.x', 0.5);
         bullets.setAll('anchor.y', 0.5);
@@ -119,21 +133,28 @@ Game.Level1.prototype = {
         bullets.setAll('outOfBoundsKill', true);
         bullets.setAll('checkWorldBounds', true);
 
-            
+
 
 
     },
     update: function () {
         this.physics.arcade.collide(stars, layer);
+
+
+        //beta stars
+        this.physics.arcade.overlap(player, stars, collectStar, null, this);
+        //beta stars
+
+
         // this.physics.arcade.overlap(player, stars, collectStar, null, this);
         player.body.velocity.x = 0;
         this.physics.arcade.collide(player, layer);
-        this.physics.arcade.collide(player, enemy1.bird,this.resetPlayer);
-      
+        this.physics.arcade.collide(player, enemy1.bird, this.resetPlayer);
+
         //Experience 
-        playerLevel = Math.log(playerXP,gameXPsteps);
-        console.log('Level: ' + Math.floor(playerLevel));
-        
+        // playerLevel = Math.log(playerXP, gameXPsteps);
+      
+
         if (controls.right.isDown) {
             player.animations.play('right');
             player.scale.setTo(1, 1);
@@ -152,62 +173,71 @@ Game.Level1.prototype = {
             player.animations.play('idle');
             player.animations.play('jump');
         }
-        
-        if (controls.shoot.isDown){
+
+        if (controls.shoot.isDown) {
             this.shootBullet();
         }
-         scoreText.text = 'Score: ' + score;
-        if(checkOverlap(bullets, enemy1.bird)){
+        scoreText.text = 'Score: ' + score;
+
+        if (checkOverlap(bullets, enemy1.bird)) {
             enemy1.bird.kill();
-            score +=220;
-            playerXP +=15;
-          
+            score += 220;
+            playerXP += 15;
+
         }
-        if (score == 1000) {
-            winText.visible = true;
-            scoreText.visible = false;
-        
-        }
+        // if (score == 1000) {
+        //     winText.visible = true;
+        //     scoreText.visible = false;
+
+        // }
 
 
     },
-    resetPlayer:function(){
+    resetPlayer: function () {
         //same as spawn
         player.reset(100, 2400);
     },
-    getCoin:function(){
+    // getCoin: function () {
 
-        map.putTile(-1,layer.getTileX(player.x), layer.getTileY(player.y));
-        playerXP += 15;
-        console.log("log", playerXP);
-        score +=10;
-       
- 
+    //     map.putTile(-1, layer.getTileX(player.x), layer.getTileY(player.y));
+    //     playerXP += 15;
+    //     console.log("PlayerXP: ", playerXP);
+    //     score += 10;
 
-    },
-    shootBullet:function(){
-        if(this.time.now > shootTime){
+    // },
+    shootBullet: function () {
+        if (this.time.now > shootTime) {
             bullet = bullets.getFirstExists(false);
-            if(bullet) {
-                bullet.reset(player.x,player.y);
+            if (bullet) {
+                bullet.reset(player.x, player.y);
 
-                bullet.body.velocity.y = -600;
+                bullet.body.velocity.x = 1000;
 
                 shootTime = this.time.now + 600;
             }
         }
     }
 
-    
+
 
 
 }
+function collectStar (player, star) {
 
-function checkOverlap(spriteA,spriteB){
+    star.kill();
+    score += 10;
+
+    playerXP += 15;
+    console.log('collectStar: ', playerXP);
+    scoreText.text = 'Score: ' + score;
+
+}
+
+function checkOverlap(spriteA, spriteB) {
     var boundsA = spriteA.getBounds();
     var boundsB = spriteB.getBounds();
 
-    return Phaser.Rectangle.intersects(boundsA,boundsB);
+    return Phaser.Rectangle.intersects(boundsA, boundsB);
 }
 
 
@@ -241,5 +271,5 @@ function checkOverlap(spriteA,spriteB){
 //             bullet.body.velocity.x = 1200;
 //             bulletTime = this.time.now + 200;
 //         }
-    
+
 // };

@@ -21,6 +21,7 @@ Game.Preloader.prototype = {
         this.load.image('bullet', 'assets/bullet.png');
         this.load.spritesheet('player', 'assets/dude.png', 32, 45)
         this.load.image('star', 'assets/star.png');
+        this.load.image('diamond', 'assets/diamond.png');
         this.load.image('drag', 'assets/diamond.png');
         this.load.image('bird', 'assets/bird.png');
         
