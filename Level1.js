@@ -44,11 +44,90 @@ Game.Level1.prototype = {
 
         stars.enableBody = true;
 
+        // for (var i = 0; i < 12; i++) {
+        //     var star = stars.create(i * 70, 0, 'diamond');
+        //     star.body.gravity.y = 1000;
+        //     star.body.bounce.y = 0.7 + Math.random() * 0.2;
+        // };
+        var star0 = stars.create(350, 2400, 'diamond');
+        star0.body.gravity.y = 1000;
+        star0.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star2 = stars.create(450, 2400, 'diamond');
+        star2.body.gravity.y = 1000;
+        star2.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star3 = stars.create(470, 2250, 'diamond');
+        star3.body.allowGravity = false;
+        var star4 = stars.create(100, 2100, 'diamond');
+        star4.body.gravity.y = 1000;
+        star4.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star5 = stars.create(500, 1900, 'diamond');
+        star5.body.gravity.y = 1000;
+        star5.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star6 = stars.create(400, 1800, 'diamond');
+        star6.body.gravity.y = 1000;
+        star6.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star7 = stars.create(80, 1800, 'diamond');
+        star7.body.gravity.y = 1000;
+        star7.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star8 = stars.create(150, 1600, 'diamond');
+        star8.body.gravity.y = 1000;
+        star8.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star9 = stars.create(350, 1300, 'diamond');
+        star9.body.gravity.y = 1000;
+        star9.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star10 = stars.create(450, 1300, 'diamond');
+        star10.body.gravity.y = 1000;
+        star10.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star11 = stars.create(350, 1100, 'diamond');
+        star11.body.gravity.y = 1000;
+        star11.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star12 = stars.create(80, 1100, 'diamond');
+        star12.body.gravity.y = 1000;
+        star12.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star13 = stars.create(80, 1200, 'diamond');
+        star13.body.gravity.y = 1000;
+        star13.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var counter = 0;
         for (var i = 0; i < 12; i++) {
-            var star = stars.create(i * 70, 0, 'diamond');
-            star.body.gravity.y = 1000;
+            counter += 50;
+          
+            var star = stars.create(80, 1100 - counter, 'diamond');
+            star.body.allowGravity = false;
             star.body.bounce.y = 0.7 + Math.random() * 0.2;
-        }
+        };
+        var star14 = stars.create(490, 1000, 'diamond');
+        star14.body.gravity.y = 1000;
+        star14.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star15 = stars.create(370, 900, 'diamond');
+        star15.body.gravity.y = 1000;
+        star15.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star16 = stars.create(270, 900, 'diamond');
+        star16.body.gravity.y = 1000;
+        star16.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star17 = stars.create(270, 820, 'diamond');
+        star17.body.allowGravity = false;
+        star17.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star18 = stars.create(270, 720, 'diamond');
+        star18.body.gravity.y = 1000;
+        star18.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star19 = stars.create(360, 530, 'diamond');
+        star19.body.gravity.y = 1000;
+        star19.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star20 = stars.create(520, 480, 'diamond');
+        star20.body.gravity.y = 1000;
+        star20.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star21 = stars.create(250, 260, 'diamond');
+        star21.body.gravity.y = 1000;
+        star21.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star22 = stars.create(360, 260, 'diamond');
+        star22.body.gravity.y = 1000;
+        star22.body.bounce.y = 0.7 + Math.random() * 0.2;
+        var star23 = stars.create(100, 260, 'diamond');
+        star23.body.gravity.y = 1000;
+        star23.body.bounce.y = 0.7 + Math.random() * 0.2;
+
+       
+
 
 
 
@@ -153,7 +232,7 @@ Game.Level1.prototype = {
 
         //Experience 
         // playerLevel = Math.log(playerXP, gameXPsteps);
-      
+
 
         if (controls.right.isDown) {
             player.animations.play('right');
@@ -222,7 +301,7 @@ Game.Level1.prototype = {
 
 
 }
-function collectStar (player, star) {
+function collectStar(player, star) {
 
     star.kill();
     score += 10;
