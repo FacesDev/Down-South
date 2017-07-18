@@ -18,6 +18,9 @@ EnemyBird = function (index, game, x, y) {
 var enemy1;
 
 Game.Level1 = function (game) { };
+var playerXP = 0;
+var gameXPsteps = 15;
+var playerLevel = 0;
 var map;
 var layer;
 var bullets;
@@ -31,9 +34,8 @@ var drag;
 var score = 0;
 var scoreText;
 var winText;
-var playerXP = 0;
-var gameXPsteps = 15;
-var playerLevel = 0;
+
+
 
 
 Game.Level1.prototype = {
@@ -41,14 +43,7 @@ Game.Level1.prototype = {
 
         // beta stars
         stars = this.add.group();
-
         stars.enableBody = true;
-
-        // for (var i = 0; i < 12; i++) {
-        //     var star = stars.create(i * 70, 0, 'diamond');
-        //     star.body.gravity.y = 1000;
-        //     star.body.bounce.y = 0.7 + Math.random() * 0.2;
-        // };
         var star0 = stars.create(350, 2400, 'diamond');
         star0.body.gravity.y = 1000;
         star0.body.bounce.y = 0.7 + Math.random() * 0.2;
@@ -90,7 +85,6 @@ Game.Level1.prototype = {
         var counter = 0;
         for (var i = 0; i < 12; i++) {
             counter += 50;
-          
             var star = stars.create(80, 1100 - counter, 'diamond');
             star.body.allowGravity = false;
             star.body.bounce.y = 0.7 + Math.random() * 0.2;
@@ -125,19 +119,12 @@ Game.Level1.prototype = {
         var star23 = stars.create(100, 260, 'diamond');
         star23.body.gravity.y = 1000;
         star23.body.bounce.y = 0.7 + Math.random() * 0.2;
-
-       
-
-
-
-
-
-
         //beta stars
+
+
         scoreText = this.add.text(100, 2400, 'score: 0', { fontSize: '32px', fill: '#000' });
         winText = this.add.text(this.world.centerX, this.world.centerY, "You Win!", { font: '32px Arial', fill: '#fff' });
         winText.visible = false;
-
         winText.fixedToCamera = true;
         scoreText.fixedToCamera = true;
 
@@ -149,14 +136,8 @@ Game.Level1.prototype = {
         //collision tiles
         map.setCollisionBetween(0, 21);
         map.setCollisionBetween(24, 100);
-
-        // map.setCollisionBetween(35, 100);
         map.setTileIndexCallback(33, this.resetPlayer, this);
         map.setTileIndexCallback(34, this.resetPlayer, this);
-
-        // map.setTileIndexCallback(79, this.getCoin, this);
-
-
 
         //
         player = this.add.sprite(100, 2400, 'player');
@@ -178,7 +159,6 @@ Game.Level1.prototype = {
             left: this.input.keyboard.addKey(Phaser.Keyboard.D),
             up: this.input.keyboard.addKey(Phaser.Keyboard.W),
             shoot: this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
-
         };
 
         map.addTilesetImage('preloader', 'tileset');
@@ -212,28 +192,27 @@ Game.Level1.prototype = {
         bullets.setAll('outOfBoundsKill', true);
         bullets.setAll('checkWorldBounds', true);
 
-
-
-
     },
     update: function () {
+        console.log("playerLEvel: ", playerLevel);
+        console.log("score", score);
+
+        if(playerLevel >= 5){
+            playerSpeed = 500
+        }
+
         this.physics.arcade.collide(stars, layer);
-
-
         //beta stars
         this.physics.arcade.overlap(player, stars, collectStar, null, this);
         //beta stars
-
-
-        // this.physics.arcade.overlap(player, stars, collectStar, null, this);
-        player.body.velocity.x = 0;
+        
         this.physics.arcade.collide(player, layer);
         this.physics.arcade.collide(player, enemy1.bird, this.resetPlayer);
 
-        //Experience 
-        // playerLevel = Math.log(playerXP, gameXPsteps);
-
-
+        // Experience 
+        playerLevel = Math.log(playerXP,gameXPsteps);
+       
+        player.body.velocity.x = 0;
         if (controls.right.isDown) {
             player.animations.play('right');
             player.scale.setTo(1, 1);
@@ -260,55 +239,39 @@ Game.Level1.prototype = {
 
         if (checkOverlap(bullets, enemy1.bird)) {
             enemy1.bird.kill();
-            score += 220;
+            score += 30;
             playerXP += 15;
+            console.log("Current XP: ", playerXP);
+            console.log("Level: ", playerLevel);
 
         }
-        // if (score == 1000) {
-        //     winText.visible = true;
-        //     scoreText.visible = false;
-
-        // }
-
-
+        if (score === 570) {
+            winText.visible = true;
+            scoreText.visible = false;
+        }
     },
     resetPlayer: function () {
         //same as spawn
         player.reset(100, 2400);
     },
-    // getCoin: function () {
-
-    //     map.putTile(-1, layer.getTileX(player.x), layer.getTileY(player.y));
-    //     playerXP += 15;
-    //     console.log("PlayerXP: ", playerXP);
-    //     score += 10;
-
-    // },
     shootBullet: function () {
         if (this.time.now > shootTime) {
             bullet = bullets.getFirstExists(false);
             if (bullet) {
                 bullet.reset(player.x, player.y);
-
                 bullet.body.velocity.x = 1000;
-
                 shootTime = this.time.now + 600;
             }
         }
     }
-
-
-
-
 }
 function collectStar(player, star) {
-
     star.kill();
     score += 10;
-
     playerXP += 15;
-    console.log('collectStar: ', playerXP);
     scoreText.text = 'Score: ' + score;
+    console.log("Current XP: ", playerXP);
+            console.log("Level: ", playerLevel);
 
 }
 
@@ -318,37 +281,3 @@ function checkOverlap(spriteA, spriteB) {
 
     return Phaser.Rectangle.intersects(boundsA, boundsB);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function collectStar (player, star) {
-
-//     star.kill();
-//     // score += 10;
-//     // scoreText.text = 'Score: ' + score;
-
-// }
-
-// //fires bullet on space down. sets bullet start x:y and velocity. When it gets to the end it cancels
-// function fireBullet() {
-//     // if (this.time.now > bulletTime) {
-//         bullet = bullets.getFirstExists(false);
-
-//         if (bullet) {
-//             bullet.reset(player.x + 30, player.y + 40);
-//             bullet.body.velocity.x = 1200;
-//             bulletTime = this.time.now + 200;
-//         }
-
-// };
